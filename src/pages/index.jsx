@@ -1,7 +1,10 @@
+import dynamic from 'next/dynamic';
 import MainLayout from '@/components/layout/MainLayout';
-import TickerPreview from '@/components/ticker/TickerPreview';
 import "../styles/globals.css";
 
+const TickerPreview = dynamic(() => import('@/components/ticker/TickerPreview'), {
+  ssr: false,
+});
 export default function Home() {
   return (
     <MainLayout>
