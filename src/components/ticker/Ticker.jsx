@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import "./style.css"; // Assuming you have a CSS file for styles
+import { useSelector } from "react-redux";
+import "./style.css";
 
-const TickerBuilder = () => {
+const Ticker = () => {
 
 	const tickerSelector = useSelector((state) => state.ticker);
 
@@ -108,4 +108,4 @@ const TickerBuilder = () => {
 	);
 };
 
-export { TickerBuilder };
+export { Ticker };
