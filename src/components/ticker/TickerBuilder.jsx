@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "./style.css"; // Assuming you have a CSS file for styles
 
 const TickerBuilder = () => {
+	const dispatch = useDispatch();
 	const params = {
 		headerText: "New Ticker",
 		headerIcon: "",
@@ -46,7 +48,12 @@ const TickerBuilder = () => {
 		},
 	};
 
-	const repeatedItems = [...params.items, ...params.items];
+	const tickerSelector = useSelector((state) => state.ticker);
+
+	React.useEffect(() => {
+		console.log("tickerSelector", tickerSelector);
+	}, [tickerSelector]);
+	const repeatedItems = [...tickerSelector.items, ...tickerSelector.items];
 	const tickerItems = repeatedItems.filter((item) => item.active);
 
 	return (
@@ -54,16 +61,18 @@ const TickerBuilder = () => {
 			<div
 				className="ticker flex flex-row w-full justify-center items-center overflow-hidden"
 				style={{
-					border: `${params.advanced.borderWidth}px solid ${params.basic.colors.primary}`,
-					borderRadius: `${params.advanced.borderRadius}px`,
-					height: params.advanced.height + "px",
+					border: `${tickerSelector.advanced.borderWidth}px solid ${tickerSelector.basic.colors.primary}`,
+					borderRadius: `${tickerSelector.advanced.borderRadius}px`,
+					height: tickerSelector.advanced.height + "px",
 				}}
 			>
 				<div
 					className="h-full label flex flex-row bg-blue-600 w-[20%] gap-3 justify-center items-center"
 					style={{
-						backgroundColor: params.basic.colors.primary,
-						display: params.advanced.showHeader ? "flex" : "none",
+						backgroundColor: tickerSelector.basic.colors.primary,
+						display: tickerSelector.advanced.showHeader
+							? "flex"
+							: "none",
 					}}
 				>
 					<span className="text-center">
@@ -85,17 +94,19 @@ const TickerBuilder = () => {
 					<p
 						className="text-center"
 						style={{
-							fontSize: params.advanced.header.fontSize,
-							fontFamily: params.advanced.fontFamily,
-							color: params.advanced.header.color,
+							fontSize: tickerSelector.advanced.header.fontSize,
+							fontFamily: tickerSelector.advanced.fontFamily,
+							color: tickerSelector.advanced.header.color,
 						}}
 					>
-						{params.headerText}
+						{tickerSelector.headerText}
 					</p>
 				</div>
 				<div
 					className="marquee w-full flex items-center justify-center overflow-hidden px-[20px] py-[10px] h-full"
-					style={{ backgroundColor: params.basic.colors.background }}
+					style={{
+						backgroundColor: tickerSelector.basic.colors.background,
+					}}
 				>
 					<div className="marquee-track flex flex-row items-center gap-10 animate-marquee whitespace-nowrap">
 						{tickerItems.map((item, idx) => (
@@ -107,9 +118,11 @@ const TickerBuilder = () => {
 									className="text-black font-bold"
 									style={{
 										fontSize:
-											params.advanced.body.titleFontSize,
-										color: params.advanced.body.titleColor,
-										fontFamily: params.advanced.fontFamily,
+											tickerSelector.advanced.body
+												.titleFontSize,
+										color: tickerSelector.basic.colors.text,
+										fontFamily:
+											tickerSelector.advanced.fontFamily,
 									}}
 								>
 									{item.title || "Default Title"}
@@ -117,11 +130,15 @@ const TickerBuilder = () => {
 								<p
 									className="text-black content-center"
 									style={{
-										fontSize: params.advanced.body.fontSize,
-										color: params.advanced.body.color,
+										fontSize:
+											tickerSelector.advanced.body
+												.fontSize,
+										color: tickerSelector.basic.colors.text,
 										textDecoration:
-											params.advanced.body.textDecoration,
-										fontFamily: params.advanced.fontFamily,
+											tickerSelector.advanced.body
+												.textDecoration,
+										fontFamily:
+											tickerSelector.advanced.fontFamily,
 									}}
 								>
 									{item.text}
