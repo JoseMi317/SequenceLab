@@ -3,12 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 const tickerSlice = createSlice({
 	name: "ticker",
 	initialState: {
+		TickerName: "Example Ticker",
 		headerText: "New Ticker",
 		headerIcon: "",
 		items: [
 			{
-				title: "Blockbuster Movie Premiere",
-				text: "",
+				title: "New Ticker",
+				text: "This is a new ticker item",
 				active: true,
 			},
 		],
@@ -79,6 +80,7 @@ const tickerSlice = createSlice({
 			}
 			state.items[index] = item;
 		},
+
 		showItem: (state, action) => {
 			const { index } = action.payload;
 			if (index < 0 || index >= state.items.length) {
@@ -87,6 +89,7 @@ const tickerSlice = createSlice({
 			}
 			state.items[index].active = !state.items[index].active;
 		},
+		
 		deleteItem: (state, action) => {
 			const { index } = action.payload;
 			if (index < 0 || index >= state.items.length) {
@@ -95,9 +98,18 @@ const tickerSlice = createSlice({
 			}
 			state.items.splice(index, 1);
 		},
+
+		addItem: (state) => {
+			state.items.push({
+			title: "New Ticker",
+			text: "",
+			active: true,
+			});
+		},
+		
 	},
 });
 
-export const { setProperty } = tickerSlice.actions;
+export const { setProperty, setItem, showItem, deleteItem, addItem } = tickerSlice.actions;
 export const selectTicker = (state) => state.ticker;
 export default tickerSlice.reducer;

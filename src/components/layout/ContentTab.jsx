@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Trash2,
   ChevronDown,
@@ -6,44 +6,55 @@ import {
   Plus,
   GripVertical,
 } from "lucide-react";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectTicker,
+  setProperty,
+  setItem,
+  deleteItem,
+  showItem,
+  addItem,
+} from "../../redux/tickerSlice";
 
 export default function ContentTab() {
-  const [items, setItems] = useState([
-    { title: "Blockbuster Movie Premiere", open: false, isActive: true, description: "", url: ""},
-  ]);
+  const dispatch = useDispatch();
+  const { items, headerText } = useSelector(selectTicker);
 
-  const [labelText, setLabelText] = useState("");
+  // Estado para abrir/cerrar items
+  const [openIndexes, setOpenIndexes] = useState({});
 
-  const removeItem = (index) => {
-    const updated = [...items];
-    updated.splice(index, 1);
-    setItems(updated);
-  };
-
-    const toggleItem = (index) => {
-    setItems((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, open: !item.open } : item
-      )
-    );
+  const toggleItem = (index) => {
+    setOpenIndexes((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
   };
 
   const updateTitle = (index, newTitle) => {
-    const updated = [...items];
-    updated[index].title = newTitle;
-    setItems(updated);
+    const item = { ...items[index], title: newTitle };
+    dispatch(setItem({ index, item }));
+  };
+
+  const onLabelChange = (e) => {
+    dispatch(setProperty({ key: ["headerText"], value: e.target.value }));
+  };
+
+  const toggleIsActive = (index) => {
+    dispatch(showItem({ index }));
+  };
+
+  const removeItem = (index) => {
+    dispatch(deleteItem({ index }));
+  };
+
+  const updateField = (index, key, value) => {
+    const item = { ...items[index], [key]: value };
+    dispatch(setItem({ index, item }));
   };
 
   const addNewItem = () => {
-    setItems([...items, { title: "New Ticker", open: false }]);
-  };
-
-  const toggleIsActive = (id) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, isActive: !item.isActive } : item
-      )
-    );
+    dispatch(addItem());
   };
 
   return (
@@ -61,25 +72,19 @@ export default function ContentTab() {
         <div className="flex-1">
           <label className="block text-md text-zinc-400 mb-1">Label Text</label>
           <input
-            value={labelText}
-            onChange={(e) => setLabelText(e.target.value)}
+            value={headerText}
+            onChange={onLabelChange}
             className="w-full bg-zinc-800 text-white px-3 py-2 rounded border border-zinc-700 focus:outline-none"
             placeholder="Enter label..."
           />
         </div>
       </div>
-      
-      <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+
+      <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700" />
 
       {/* Lista de items */}
-      <div className="space-y-4 ">
+      <div className="space-y-4">
         <label className="text-md text-zinc-400">Items</label>
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-full px-3 py-2 rounded bg-zinc-800 border border-zinc-700 text-white mt-2 focus:outline-none"
-        />
-
         {items.map((item, index) => (
           <div
             key={index}
@@ -99,7 +104,7 @@ export default function ContentTab() {
                   className="text-zinc-400 hover:text-white"
                   onClick={() => toggleItem(index)}
                 >
-                  {item.open ? (
+                  {openIndexes[index] ? (
                     <ChevronUp size={18} />
                   ) : (
                     <ChevronDown size={18} />
@@ -113,39 +118,32 @@ export default function ContentTab() {
                 </button>
               </div>
             </div>
-            {item.open && (
+            {openIndexes[index] && (
               <div className="text-md text-zinc-400 border-t border-zinc-700 pt-2">
                 <div className="flex items-center justify-end mb-2">
                   <button
-                    onClick={() => toggleIsActive(item.id)}
+                    onClick={() => toggleIsActive(index)}
                     className={`relative w-12 h-6 flex items-center rounded-full p-1 transition-colors duration-300 
-                      ${item.isActive ? "bg-green-500" : "bg-zinc-600"}`}
+                      ${item.active ? "bg-green-500" : "bg-zinc-600"}`}
                   >
                     <div
                       className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300
-                        ${item.isActive ? "translate-x-6" : "translate-x-0"}`}
+                        ${item.active ? "translate-x-6" : "translate-x-0"}`}
                     />
                   </button>
                 </div>
                 <input
-                  type="text" 
-                  value={item.description}
-                  className="w-full bg-zinc-800 text-white px-3 py-2 rounded border border-zinc-700 focus:outline-none" 
-                  onChange={(e) => {
-                    const updated = [...items];
-                    updated[index].description = e.target.value;
-                    setItems(updated);
-                  }}
-                  placeholder="Description..." />
+                  type="text"
+                  value={item.text || ""}
+                  className="w-full bg-zinc-800 text-white px-3 py-2 rounded border border-zinc-700 focus:outline-none"
+                  onChange={(e) => updateField(index, "text", e.target.value)}
+                  placeholder="Description..."
+                />
                 <input
                   type="url"
-                  value={item.url}
+                  value={item.url || ""}
                   className="w-full bg-zinc-800 text-white px-3 py-2 rounded border border-zinc-700 focus:outline-none mt-2"
-                  onChange={(e) => {
-                    const updated = [...items];
-                    updated[index].url = e.target.value;
-                    setItems(updated);
-                  }}
+                  onChange={(e) => updateField(index, "url", e.target.value)}
                   placeholder="URL..."
                 />
               </div>

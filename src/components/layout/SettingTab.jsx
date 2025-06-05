@@ -133,7 +133,7 @@ export default function SettingTab() {
             <input
               type="range"
               min="0"
-              max="20"
+              max="15"
               step="1"
               value={state.advanced.borderWidth}
               onChange={(e) =>
