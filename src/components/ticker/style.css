@@ -18,3 +18,24 @@
 .marquee-track {
 	width: fit-content;
 }
+
+/* scrollStyles.css */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4f46e5; /* Indigo-600 */
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6255f0; /* Indigo-700 */
+}
