@@ -5,18 +5,12 @@ import { TickerBuilder } from "@/components/ticker/TickerBuilder";
 import { Provider } from 'react-redux';
 import { store } from '@/redux/store';
 
-const TickerPreview = dynamic(
-	() => import("@/components/ticker/TickerPreview"),
-	{
-		ssr: false,
-	}
-);
 export default function Home() {
   return (
     <Provider store={store}>
-    <MainLayout>
-     <TickerBuilder />
-    </MainLayout>
+      <MainLayout>
+        <TickerBuilder />
+      </MainLayout>
     </Provider>
   );
 }

@@ -3,50 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import "./style.css"; // Assuming you have a CSS file for styles
 
 const TickerBuilder = () => {
-	const dispatch = useDispatch();
-	const params = {
-		headerText: "New Ticker",
-		headerIcon: "",
-		items: [
-			{
-				title: "Type Content Here",
-				text: "This is the first item",
-				active: true,
-			},
-		],
-		basic: {
-			animation: "",
-			labelStyle: 0,
-			colors: {
-				text: "#000000",
-				background: "#636B2F",
-				primary: "#000000",
-			},
-		},
-		advanced: {
-			fontFamily: "Roboto",
-			loop: false,
-			showHeader: true,
-			position: "",
-			borderRadius: 10,
-			borderWidth: 2,
-			height: 75,
-			header: {
-				fontSize: 14,
-				color: "",
-				iconColor: "",
-				iconSize: 0,
-				textDecoration: "",
-			},
-			body: {
-				fontSize: 14,
-				color: "#ffffff",
-				titleColor: "#ffffff",
-				titleFontSize: 16,
-				textDecoration: "none",
-			},
-		},
-	};
 
 	const tickerSelector = useSelector((state) => state.ticker);
 
