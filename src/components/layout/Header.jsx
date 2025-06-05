@@ -1,9 +1,18 @@
 import React, { useState, useRef } from 'react';
+import { selectTicker, setProperty } from '../../redux/tickerSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 const Header = () => {
+const dispatch = useDispatch();
+  const ticker = useSelector(selectTicker);
   const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState("My News Ticker");
+  const [title, setTitle] = useState(ticker.TickerName);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    setTitle(ticker.TickerName);
+  }, [ticker.TickerName]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -12,11 +21,14 @@ const Header = () => {
 
   const handleBlur = () => {
     setIsEditing(false);
+    if (title !== ticker.TickerName) {
+      dispatch(setProperty({ key: ["TickerName"], value: title }));
+    }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      setIsEditing(false);
+      inputRef.current.blur();
     }
   };
 
@@ -35,9 +47,7 @@ const Header = () => {
           />
         ) : (
           <>
-            <h1 className="text-lg font-semibold px-6 rounded-xl">
-              {title}
-            </h1>
+            <h1 className="text-lg font-semibold px-6 rounded-xl">{title}</h1>
             <button onClick={handleEditClick}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -56,21 +66,6 @@ const Header = () => {
             </button>
           </>
         )}
-      </div>
-
-      <div className='flex items-center space-x-2'>
-        <button className="bg-gray-800 p-2 rounded-full hover:bg-gray-700">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-          </svg>
-
-        </button>
-        <button className='bg-gray-800 p-2 rounded-full hover:bg-gray-700'>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="m15 15 6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3" />
-          </svg>
-
-        </button>
       </div>
 
       <div className="space-x-4">
